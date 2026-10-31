@@ -1,0 +1,157 @@
+:root {
+  --olive: #a9a561;
+  --olive-dark: #8c8a4b;
+  --forest: #2f4a2c;
+  --forest-deep: #1f3320;
+  --cream: #e7e8d8;
+  --ink: #17231a;
+  --step: clamp(110px, 21vw, 340px);
+  --card: clamp(90px, 17vw, 290px);
+  --cup-w: clamp(200px, 28vw, 460px);
+  --display: "Fraunces", Georgia, serif;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { background: var(--olive); color: var(--cream); font-family: "Inter", system-ui, sans-serif; overflow-x: hidden; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+.page { min-height: 100vh; padding: 28px 40px 40px; display: flex; flex-direction: column; gap: 28px; }
+.top { display: flex; justify-content: center; align-items: center; font-size: 30px;font-weight:bold;  }
+
+.frame {
+  position: relative; flex: 1; min-height: 560px;
+  border: 18px solid var(--olive-dark); border-radius: 48px; overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 20%, #4c6a42 0%, var(--forest) 45%, var(--forest-deep) 100%);
+  touch-action: pan-y; user-select: none;
+}
+
+
+/* cards */
+.stage { position: absolute; inset: 0; z-index: 5; }
+.card {
+  position: absolute; left: 50%; top: 52%;
+  width: var(--card); aspect-ratio: 1; border-radius: 30%;
+  background: var(--cream); box-shadow: 0 24px 40px rgba(0,0,0,.25);
+  display: grid; place-items: center;
+  transform:
+    translate(-50%, -50%)
+    translate(calc(var(--off) * var(--step)), calc((var(--abs) - 1) * var(--card) * .45))
+    rotate(calc(var(--off) * 15deg));
+  transition: transform .9s cubic-bezier(.65, 0, .25, 1), opacity .5s ease;
+}
+.card:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+.card-ico { width: 62%; aspect-ratio: 1; display: grid; place-items: center; }
+.card-ico:has(svg) { width: 46%; filter: drop-shadow(0 10px 8px rgba(0,0,0,.25)); }
+.card-ico img {
+  width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply;
+  -webkit-mask-image: radial-gradient(closest-side, #000 82%, transparent 100%);
+          mask-image: radial-gradient(closest-side, #000 82%, transparent 100%);
+}
+.card-ico svg { width: 100%; height: 100%; }
+.card.in-cup {
+  opacity: 0; pointer-events: none;
+  transform: translate(-50%, -50%) translate(0, calc(var(--card) * .1)) rotate(0deg) scale(.3);
+  transition: transform .9s cubic-bezier(.65, 0, .25, 1), opacity .35s ease .45s;
+}
+.card.hidden { opacity: 0; pointer-events: none; }
+
+/* ---------- CUP (real images) ---------- */
+.cup-wrap {
+  position: absolute; left: 50%; top: 52%; z-index: 6;
+  width: var(--cup-w); aspect-ratio: 1 / 1.72; transform: translate(-50%, -52%);
+}
+.cup-wrap.sip { animation: sip .9s cubic-bezier(.3, 1.4, .5, 1); }
+@keyframes sip {
+  0% { transform: translate(-50%, -52%) scale(1); }
+  45% { transform: translate(-50%, -52%) scale(1.045, .97); }
+  100% { transform: translate(-50%, -52%) scale(1); }
+}
+
+.cup-photo {
+  position: absolute; inset: 0;
+  overflow: hidden;
+}
+
+.cup-base {
+  position: absolute;
+  width: 260%; 
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: opacity .35s ease;
+  
+  /* این ترکیب، پس‌زمینه مشکی رو کاملاً حذف میکنه */
+  mix-blend-mode: screen; 
+  filter: brightness(1.15) contrast(1.1);
+}
+.flavor-name {
+  position: absolute; left: 0; right: 0; top: 75%; text-align: center;
+  font-family: var(--display); font-weight: 800; font-size: clamp(22px, 2.9vw, 42px); letter-spacing: -0.04em;
+  color: var(--cream); text-shadow: 0 2px 10px rgba(0,0,0,.35);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* buy tile */
+.buy {
+  position: absolute; z-index: 8; left: 50%; bottom: 40%; transform: translateX(-50%);
+  width: 100px; height: 50px; border-radius: 22px; background: var(--cream); color: var(--ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 8px 18px;
+  font-family: var(--display); font-weight: 700; font-size: 14px; letter-spacing: -0.03em;
+}
+.buy button { font-size: 28px; transition: transform .2s; }
+.buy button:hover { transform: scale(1.15); }
+
+.headline {
+  position: absolute; z-index: 9; left: 0; right: 0; bottom: 85%; text-align: center;
+  font-family: var(--display); font-weight: 800; font-size: 60px;
+  letter-spacing: -0.04em; line-height: 1; color: var(--cream); text-shadow: 0 6px 30px rgba(0,0,0,.25);
+}
+
+.arrows {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  text-align: center;       /* ⭐ برای IE و همه مرورگرها */
+  line-height: 0;
+  font-size: 0;              /* ⭐ حذف فاصله‌های اضافی بین inline-block ها */
+}
+
+.arrows button {
+  display: inline-block;     /* ⭐ جایگزین flex */
+  vertical-align: middle;
+  width: 48px;
+  height: 48px;
+  margin: 0 4px;             /* ⭐ جایگزین gap برای IE */
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 20px;
+  line-height: normal;
+}
+
+.arrows button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.arrows button:focus-visible {
+  outline: 3px solid #fff;
+}
+@media (max-width: 720px) {
+  .page { padding: 16px; }
+  .frame { border-width: 10px; border-radius: 32px; }
+  .bar { inset: 16px 16px auto; }
+  .pill-btn { width: 38px; height: 38px; }
+  .headline { bottom: 80%; font-size: 50px;}
+  .buy { bottom: 45%; width: 80px;  }
+  .arrows {  bottom: 80px; }
+  .flavor-name{top:80%}
+
+}
+@media (prefers-reduced-motion: reduce) {
+  .card, .card.in-cup, .cup-wrap, .cup-base { transition-duration: .01ms !important; animation: none !important; }
+}
